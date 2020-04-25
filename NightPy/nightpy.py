@@ -18,7 +18,7 @@ class NightPy:
     """
     Request Nightbot API
     """
-    def api_request(self, endpoint, method='get', payload=None):
+    def api_request(self, endpoint, method='get', payload=None, params=None):
         method = method.lower()
 
         if payload is None:
@@ -27,17 +27,31 @@ class NightPy:
         header = {'Authorization': 'Bearer {0}'.format(self.api_token)}
         try:
             if method == 'head':
-                response = requests.head('{0}{1}'.format(self.api_uri, endpoint), headers=header)
+                response = requests.head('{0}{1}'.format(self.api_uri, endpoint),
+                                         headers=header,
+                                         params=params)
             elif method == 'delete':
-                response = requests.delete('{0}{1}'.format(self.api_uri, endpoint), headers=header)
+                response = requests.delete('{0}{1}'.format(self.api_uri, endpoint),
+                                           headers=header,
+                                           params=params)
             elif method == 'get':
-                response = requests.get('{0}{1}'.format(self.api_uri, endpoint), headers=header, data=payload)
+                response = requests.get('{0}{1}'.format(self.api_uri, endpoint),
+                                        headers=header,
+                                        data=payload,
+                                        params=params)
             elif method == 'options':
-                response = requests.options('{0}{1}'.format(self.api_uri, endpoint), headers=header)
+                response = requests.options('{0}{1}'.format(self.api_uri, endpoint),
+                                            headers=header)
             elif method == 'post':
-                response = requests.post('{0}{1}'.format(self.api_uri, endpoint), headers=header, data=payload)
+                response = requests.post('{0}{1}'.format(self.api_uri, endpoint),
+                                         headers=header,
+                                         data=payload,
+                                         params=params)
             elif method == 'put':
-                response = requests.put('{0}{1}'.format(self.api_uri, endpoint), headers=header, data=payload)
+                response = requests.put('{0}{1}'.format(self.api_uri, endpoint),
+                                        headers=header,
+                                        data=payload,
+                                        params=params)
             else:
                 response = None
             if response.status_code == 200:
