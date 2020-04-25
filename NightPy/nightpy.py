@@ -1,3 +1,6 @@
+import urllib.parse
+import webbrowser
+
 import requests
 import json
 from .models import *
@@ -5,11 +8,12 @@ from .models import *
 
 class NightPy:
 
-    def __init__(self, token):
+    def __init__(self, token=None):
         self.auth_uri = 'https://api.nightbot.tv/oauth2/authorize'
         self.token_uri = 'https://api.nightbot.tv/oauth2/token'
         self.api_uri = 'https://api.nightbot.tv/1/'
         self.api_token = token
+        self.refresh_token = None
         # self.client_data = [client_id, client_secret, code]
 
     # -------------------------------------------------------------------------
@@ -66,10 +70,22 @@ class NightPy:
     # -------------------------------------------------------------------------
     # OAUTH2
     # -------------------------------------------------------------------------
+    def authorize(self, client_id, client_secret, scope="channel song_requests song_requests_queue", redirect_uri="https://localhost", response_type="code"):
+        webbrowser.open("{}?client_id={}&redirect_uri={}&response_type={}&scope={}".format(
+            self.auth_uri,
+            urllib.parse.quote(client_id),
+            urllib.parse.quote(redirect_uri),
+            urllib.parse.quote(response_type),
+            urllib.parse.quote(scope)
+        ))
+        code = input("Please enter the code: ").strip()
+        self.api_token, self.refresh_token = self.create_token(client_id, client_secret, code)
+        print(self.api_token)
+
     """
     Create token from client_id, client_secret, code
     """
-    def create_token(self, client_id, client_secret, redirect_uri, code):
+    def create_token(self, client_id, client_secret, code, redirect_uri="https://localhost"):
         payload = {
             'client_id': '{0}'.format(client_id),
             'client_secret': '{0}'.format(client_secret),
